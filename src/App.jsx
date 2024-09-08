@@ -1,31 +1,16 @@
-import { useEffect, useState } from 'react'
 import './App.css'
-import axios from 'axios'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import SignUp from './pages/Signup'
 
 
 function App() {
-  const [count, setCount] = useState(0)
-  useEffect(()=>{
+    return (
+      <BrowserRouter>
+      <Routes>
 
- 
- 
-    const fetchData = async () => {
-      try {
-        const result = await axios('http://localhost:5000/api/users')
-        console.log(result,'result is showing ');
-      } catch (err) {
-        console.error(err); // Handle any errors
-      }
-    };
-
-    fetchData(); // Call the async function
-  },[])
-
-  return (
-    <>
-
-      <h1>Hellow</h1>
-    </>
+        <Route path='/signup' element={<SignUp/>} />
+      </Routes>
+      </BrowserRouter>
   )
 }
 

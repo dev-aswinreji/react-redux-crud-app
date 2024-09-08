@@ -12,7 +12,7 @@ app.use(express.json()); // Parse JSON request bodies
 app.get('/api/users', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM users');
-    console.log(result.rows[0],'result is showing'); 
+    console.log(result.rows[0], 'result is showing');
     res.json(result.rows); // Send the data as JSON
   } catch (err) {
     console.error(err);
@@ -20,12 +20,21 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
-app.post('/api/users/create',async (req,res)=>{
-  const {name,email,password} = req.body
-  const result = await pool.query(`INSERT INTO users (name,email,password)
-    VALUES (${name},${email},${password})
-    `)
-    console.log(result,'result of post method');
+app.post('/api/users/create', async (req, res) => {
+  try {
+
+    const { name, email, password } = req.body
+    console.log(name, email, password, 'jej', typeof name);
+    const result = await pool.query(
+      'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
+      [name, email, password]
+  );
+    console.log(result, 'result of post method');
+    res.json(result) 
+  } catch (error) {
+    res.json(error)
+    console.log(error, 'Error in post method');
+  }
 })
 
 app.listen(port, () => {
