@@ -28,12 +28,31 @@ app.post('/api/users/create', async (req, res) => {
     const result = await pool.query(
       'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
       [name, email, password]
-  );
+    );
     console.log(result, 'result of post method');
-    res.json(result) 
+    res.json(result)
   } catch (error) {
     res.json(error)
     console.log(error, 'Error in post method');
+  }
+})
+
+app.post('/api/users/login', async (req, res) => {
+  try {
+
+    const { email } = req.body
+    console.log(email, 'sowing pass and email');
+    const result = await pool.query(
+      `SELECT * FROM users WHERE email=$1`,
+      [email]
+    )
+    console.log(result.rows,'resul is hererrrrr');
+    if (result.rows)
+      res.json(result.rows[0].password)
+
+  } catch (error) {
+    res.json(error)
+    console.log(error, 'Login api ');
   }
 })
 

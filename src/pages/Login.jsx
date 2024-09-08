@@ -1,15 +1,23 @@
 import axios from "axios"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 export default function Login () {
     const [email,setEmail] = useState('')
     const [password,setPassword] = useState('')
+    const navigate = useNavigate()
     async function handleLogin(e)  {
         e.preventDefault()
-        const resutl = await axios.post(`http://localhost:5000/api/users/login`,{
+        const result = await axios.post(`http://localhost:5000/api/users/login`,{
             email,
-            password
         })
+        console.log(result,'result is shoinw in login page');
+       if(result.data === password)  {
+        alert('Login Success')
+        navigate("/")
+       }else {
+        alert('Invalid Credentials')
+       }
     }
     return (
         <>
