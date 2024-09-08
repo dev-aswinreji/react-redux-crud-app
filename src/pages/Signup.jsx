@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 export default function SignUp() {
     const [name, setName] = useState('')
@@ -20,8 +20,8 @@ export default function SignUp() {
                 'Signup Success'
             )
             navigate("/login")
-        }else {
-            alert('Some error occured',result.error)
+        } else {
+            alert('Some error occured', result.error)
         }
     }
     return (
@@ -47,6 +47,9 @@ export default function SignUp() {
                 <br />
                 <button>Sign Up</button>
             </form>
+            <p className="p-3">Already have account?
+                <Link to={"/login"} >Login</Link>
+            </p>
         </>
     )
 }
