@@ -14,6 +14,7 @@ export default function Login () {
         console.log(result,'result is shoinw in login page');
        if(result.data === password)  {
         alert('Login Success')
+        
         navigate("/")
        }else {
         alert('Invalid Credentials')
