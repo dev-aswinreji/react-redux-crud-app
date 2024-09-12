@@ -11,14 +11,13 @@ export function verifyToken(req, res, next) {
         try {
 
             const decoded = jwt.verify(token, jwtSecretKey)
-            console.log(decoded,'decoded');
-            req.user = decoded.user
+
+            req.user = { userid: decoded.userid, name: decoded.name }
             next()
 
         } catch (error) {
-            console.log(error, 'verify token middleware');
-            if(error.expiredAt){
-                return res.status(401).json({error:"Token expired"})
+            if (error.expiredAt) {
+                return res.status(401).json({ error: "Token expired" })
             }
             res.status(401).json({ error: "Invalid token" })
         }

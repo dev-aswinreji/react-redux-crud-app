@@ -32,33 +32,35 @@ export const userSignUp = async (req, res) => {
     }
 
 }
- 
+
 export const userSignIn = async (req, res) => {
     try {
         const { email, password } = req.body
 
         const jwtSecretKey = process.env.JWT_SECRET_KEY
-        console.log(jwtSecretKey,'jwt secret');
+
         const user = await pool.query(`
-            SELECT userid,password from users WHERE email='${email}';
+            SELECT userid,name,password from users WHERE email='${email}';
             `)
-        console.log(user,'user is showing');
+
         const hashPassword = await bcrypt.compare(password, user.rows[0]?.password)
         if (!hashPassword) {
             return res.status(401).json({ error: "Authentication failed" })
         }
 
-        const token = jwt.sign({ user: "world"}, jwtSecretKey, {
+        const token = jwt.sign({ userid: user.rows[0].userid, name: user.rows[0].name }, jwtSecretKey, {
             expiresIn: '1hr',
         })
-        console.log(token,'token is showing');
 
-        res.status(200).json({ token })
+        res.status(200).json({ token ,user:{ userid: user.rows[0].userid, name: user.rows[0].name }})
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' })
     }
 }
 
 export const userHome = async (req, res) => {
-    res.status(200).json({ message: "Protected route accessed" })
+
+    const { userid, name } = req.user
+
+    res.status(200).json({ message: "Protected route accessed", user: {userid,name}})
 }
