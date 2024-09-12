@@ -1,13 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import { pool } from './db/postgres.js';
+import route from './route/user.js';
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT;
 
 app.use(cors()); // Allow cross-origin requests
 app.use(express.json()); // Parse JSON request bodies
 
+
+app.use('/',route)
 // Define an endpoint to fetch users
 // app.get('/api/users', async (req, res) => {
 //   try {

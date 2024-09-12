@@ -1,10 +1,10 @@
 
 import express from "express"
-import { userSignUp } from "../controller/auth"
+import { userSignUp } from "../controller/auth.js"
 
 const route = express.Router()
 
-route.get('/api/users',userSignUp)
+route.post('/api/users',userSignUp)
 
 export default route
 
