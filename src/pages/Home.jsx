@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { addImage } from '../utils/userSlice';
 
 export default function PersonalProfile() {
     const token = useSelector((store) => store.user.session);
     const navigate = useNavigate();
     const accessToken = token[0];
-
+    const dispatch = useDispatch()
     const [profilePic, setProfilePic] = useState(null);
     const [file, setFile] = useState(null);
 
@@ -29,29 +30,27 @@ export default function PersonalProfile() {
         }
     }, [accessToken, navigate]);
 
-    // Handling file change
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
-            setFile(selectedFile); // Store the file for uploading
-            setProfilePic(URL.createObjectURL(selectedFile)); // Show image preview
+            setFile(selectedFile);
+            setProfilePic(URL.createObjectURL(selectedFile));
         }
     };
-
-    // Handling file upload
     const handleUpload = async () => {
+
         if (file) {
-            const formData = new FormData();
-            formData.append('profilePic', file);
 
             try {
-                await axios.post('http://localhost:5000/upload', formData, {
+                 await axios.post('http://localhost:5000/api/upload', { fileName: file?.name }, {
                     headers: {
                         "Authorization": `Bearer ${accessToken}`,
-                        "Content-Type": "multipart/form-data"
+                        "Content-Type": "application/json"
                     }
+
                 });
                 alert("File uploaded successfully");
+                dispatch(addImage(profilePic))
             } catch (error) {
                 console.error('Error uploading file', error);
             }
@@ -69,10 +68,17 @@ export default function PersonalProfile() {
                             <MDBRow className="g-0">
                                 <MDBCol md="4" className="gradient-custom text-center text-black"
                                     style={{ borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem' }}>
-                                    <MDBCardImage src={profilePic || "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"}
-                                        alt="Avatar" className="my-5" style={{ width: '80px' }} fluid />
-                                    
-                                    <input type="file" accept='image/*' onChange={handleFileChange} />
+
+                                    {/* Show preview if profilePic exists, otherwise fallback */}
+                                    <MDBCardImage
+                                        src={profilePic || "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"}
+                                        alt="Profile Pic"
+                                        className="my-5"
+                                        style={{ width: '80px' }}
+                                        fluid
+                                    />
+
+                                    <input type="file" accept="image/*" onChange={handleFileChange} />
                                     <button onClick={handleUpload}>Upload</button>
 
                                     <MDBTypography tag="h5">Marie Horwitz</MDBTypography>
@@ -107,5 +113,6 @@ export default function PersonalProfile() {
                 </MDBRow>
             </MDBContainer>
         </section>
+
     );
 }

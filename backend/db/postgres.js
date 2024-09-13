@@ -13,10 +13,11 @@ const createTable = async () => {
     const client = await pool.connect()
     try {
         await pool.query(`CREATE TABLE IF NOT EXISTS users (
-            userId SERIAL PRIMARY KEY,
+            userid SERIAL PRIMARY KEY,
             name VARCHAR(40) NOT NULL,
             email VARCHAR(50) UNIQUE NOT NULL,
-            password VARCHAR(100) NOT NULL
+            password VARCHAR(100) NOT NULL,
+            imageurl VARCHAR(120) 
         );`)
 
     } catch (err) {

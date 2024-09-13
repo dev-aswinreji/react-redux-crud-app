@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { userAuth } from "../utils/userSlice"
@@ -9,6 +9,10 @@ export default function Login () {
     const [password,setPassword] = useState('')
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const inputRef = useRef(null)
+    useEffect(()=>{
+        inputRef.current.focus()
+    },[])
     async function handleLogin(e)  {
         e.preventDefault()
         const result = await axios.post(`http://localhost:5000/api/users/login`,{
@@ -29,7 +33,7 @@ export default function Login () {
         <form onSubmit={handleLogin}>
         <label htmlFor="email">Email</label>
         <br />
-        <input type="email" id="email" name="email"
+        <input type="email" id="email" name="email" ref={inputRef}
             placeholder="Your email"
             onChange={(e)=>setEmail(e.target.value)}
          />
