@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Home from './pages/Home'
 import { Provider } from 'react-redux'
 import store from './utils/store'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {

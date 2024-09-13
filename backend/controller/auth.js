@@ -36,14 +36,15 @@ export const userSignUp = async (req, res) => {
 export const userSignIn = async (req, res) => {
     try {
         const { email, password } = req.body
-
+        console.log(password,'pass');
         const jwtSecretKey = process.env.JWT_SECRET_KEY
 
         const user = await pool.query(`
             SELECT userid,name,password from users WHERE email='${email}';
             `)
-
+        console.log(user,'user is here');
         const hashPassword = await bcrypt.compare(password, user.rows[0]?.password)
+        console.log(hashPassword,'hashedPass');
         if (!hashPassword) {
             return res.status(401).json({ error: "Authentication failed" })
         }
@@ -51,9 +52,10 @@ export const userSignIn = async (req, res) => {
         const token = jwt.sign({ userid: user.rows[0].userid, name: user.rows[0].name }, jwtSecretKey, {
             expiresIn: '1hr',
         })
-
+        console.log(token,'token');
         res.status(200).json({ token ,user:{ userid: user.rows[0].userid, name: user.rows[0].name }})
     } catch (error) {
+        console.log(error,'Error In userSignin');
         res.status(500).json({ error: 'Internal Server Error' })
     }
 }
