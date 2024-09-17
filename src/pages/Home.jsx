@@ -4,6 +4,12 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addImage } from '../utils/userSlice';
+import {toast,ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css'; // Import the CSS styles
+
 
 export default function PersonalProfile() {
     const token = useSelector((store) => store.user.session);
@@ -38,27 +44,32 @@ export default function PersonalProfile() {
         }
     };
     const handleUpload = async () => {
-
         if (file) {
-
             try {
-                 await axios.post('http://localhost:5000/api/upload', { fileName: file?.name }, {
+                const response = await axios.post('http://localhost:5000/api/upload', 
+                { fileName: profilePic }, 
+                {
                     headers: {
                         "Authorization": `Bearer ${accessToken}`,
                         "Content-Type": "application/json"
                     }
-
                 });
-                alert("File uploaded successfully");
-                dispatch(addImage(profilePic))
+    
+                dispatch(addImage(profilePic));
+                
+                toast.success("File uploaded successfully!");
             } catch (error) {
                 console.error('Error uploading file', error);
+                
+                toast.error("Error uploading file");
             }
         } else {
-            alert("Please select a file to upload");
+            toast.warn("Please select a file to upload", {
+                position: toast.POSITION.TOP_RIGHT
+            });
         }
     };
-
+    
     return (
         <section className="vh-100" style={{ backgroundColor: '#f4f5f7' }}>
             <MDBContainer className="py-5 h-100">
@@ -112,6 +123,7 @@ export default function PersonalProfile() {
                     </MDBCol>
                 </MDBRow>
             </MDBContainer>
+            <ToastContainer/>
         </section>
 
     );
