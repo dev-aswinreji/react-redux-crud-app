@@ -8,7 +8,7 @@ import {toast,ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import toastr from 'toastr';
-import 'toastr/build/toastr.min.css'; // Import the CSS styles
+import 'toastr/build/toastr.min.css'; 
 
 
 export default function PersonalProfile() {

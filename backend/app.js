@@ -6,8 +6,9 @@ import jwt from 'jsonwebtoken';
 
 const app = express();
 const port = process.env.PORT;
-app.use(cors()); // Allow cross-origin requests
-app.use(express.json()); // Parse JSON request bodies
+
+app.use(cors()); 
+app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }))
 
 app.use('/', route)
