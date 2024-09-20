@@ -11,6 +11,7 @@ route.post('/api/users',userSignUp)
 route.post('/api/users/login',userSignIn)
 
 route.get('/api/users/home',verifyToken,userHome)
+
 route.post('/api/upload',verifyToken,imageUpload)
 
 export default route
