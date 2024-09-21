@@ -4,9 +4,10 @@ export function verifyToken(req, res, next) {
 
     try {
         const tokenHeader = process.env.TOKEN_HEADER_KEY
+        console.log(tokenHeader,'Token header');
         const jwtSecretKey = process.env.JWT_SECRET_KEY
         const authHeader = req.header(tokenHeader)
-        
+        console.log(authHeader,'What is this'); 
         if(!authHeader){
             return res.status(401).json({error:"Invalid authentication"})
         }
@@ -15,7 +16,8 @@ export function verifyToken(req, res, next) {
         try {
 
             const decoded = jwt.verify(token, jwtSecretKey)
-            req.user = { userid: decoded.userid, name: decoded.name }
+            console.log(decoded,'decoded:');
+            req.user = { id: decoded.id, name: decoded.name }
             next()
 
         } catch (error) {

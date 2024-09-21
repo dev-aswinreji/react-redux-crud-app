@@ -53,7 +53,7 @@ export const userSignIn = async (req, res) => {
             expiresIn: '1hr',
         })
         console.log(token,'token');
-        res.status(200).json({ token ,user:{ userid: user.rows[0].userid, name: user.rows[0].name }})
+        res.status(200).json({ token ,data:{ id: user.rows[0].userid, name: user.rows[0].name }})
     } catch (error) {
         console.log(error,'Error In userSignin');
         res.status(500).json({ error: 'Internal Server Error' })
