@@ -76,3 +76,23 @@ export const unblock = async (req, res) => {
         res.status(500).json({ error: "Internal server error" })
     }
 }
+
+
+export const specificUserSearch = async (req, res) => {
+    try {
+        const { search } = req.body
+        console.log(search,'search');
+        const searchedUserData = await pool.query(`
+            SELECT * FROM users 
+            WHERE email iLIKE '${search}%';
+            `)
+        if(!searchedUserData.rows[0]){
+            return res.status(404).json({error:"user not found"})
+        }
+        console.log(searchedUserData.rows[0],'Searched User Data');
+        res.status(200).json({userData:searchedUserData.rows})
+    } catch (error) {
+        console.log(error, 'Error in specific user search');
+        res.status(500).json({error:"Internal server error"})
+    }
+}
