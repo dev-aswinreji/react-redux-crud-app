@@ -9,7 +9,7 @@ import { toast, ToastContainer } from "react-toastify"
 export default function AdminHome() {
     const accessToken = useSelector((store) => store.admin.token)
     const usersList = useSelector((store) => store.admin.userslist)
-    const adminid = useSelector((store)=>store.admin.adminid)
+    const adminid = useSelector((store) => store.admin.adminid)
     const [value, setValue] = useState("")
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -17,23 +17,20 @@ export default function AdminHome() {
     console.log(accessToken, 'accessToken is here');
 
     useEffect(() => {
-
         const storedToken = localStorage.getItem("tokenAdmin");
-        if (!accessToken && storedToken) {
+        if (storedToken && !accessToken) {
             dispatch(adminAuth(storedToken));
         }
-
-        if (!accessToken && !storedToken) {
+        if (!storedToken && !accessToken) {
             navigate("/admin/login");
         }
-
-    }, [accessToken, dispatch, navigate]);
+    }, [dispatch, navigate]);
 
     useEffect(() => {
         if (accessToken) {
-            dispatch(fetchData({ accessToken, endpoint: '/home', method: 'GET' }))
+            dispatch(fetchData({ accessToken, endpoint: '/home', method: 'GET' }));
+            localStorage.setItem("tokenAdmin", accessToken)
         }
-        localStorage.setItem("tokenAdmin",accessToken)
     }, [accessToken, dispatch])
 
     async function getAllUsersData() {
@@ -77,23 +74,19 @@ export default function AdminHome() {
         e.preventDefault()
         setValue(e.target.value)
     }
-    function reload(){
-        const storedToken = localStorage.getItem("tokenAdmin")
-        dispatch(adminAuth(storedToken))
-    }
-    useEffect(()=>{
-        reload()
-    },[adminid])
+
     function handleLogout() {
         toast.success("logout success")
         setTimeout(() => {
             dispatch(adminLogout(null))
+            localStorage.removeItem("tokenAdmin")
             navigate("/admin/login")
         }, 1000)
     }
     return (
         <div className="admin-home">
             <h1>Welcome to Admin Panel</h1>
+            <h1>{adminid}number</h1>
             <button onClick={getAllUsersData} className="fetch-button">Get User Data</button>
             <button onClick={handleLogout} style={{ textAlign: "end" }}>Logout</button>
             <br />

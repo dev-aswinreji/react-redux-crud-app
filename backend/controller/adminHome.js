@@ -2,8 +2,11 @@ import { pool } from "../db/postgres.js"
 
 export const adminHome = async (req, res) => {
     try {
-
-        res.status(200).json({ message: "Authorization approved" })
+        const { id } = req.user
+        const adminData = await pool.query(`
+            SELECT name,email,userid from users WHERE userid='${id}';
+            `)
+        res.status(200).json({ adminData: adminData.rows[0], message: "Authorization approved" })
 
     } catch (error) {
         console.log(error, 'Error in admin home');
@@ -80,19 +83,19 @@ export const unblock = async (req, res) => {
 export const specificUserSearch = async (req, res) => {
     try {
         const { search } = req.body
-        console.log(search,'data is recienving');
+        console.log(search, 'data is recienving');
         const searchedUserData = await pool.query(`
             SELECT * FROM users 
             WHERE email iLIKE '${search}%';
             `)
 
-        if(!searchedUserData.rows[0]){
-            return res.status(404).json({error:"user not found"})
+        if (!searchedUserData.rows[0]) {
+            return res.status(404).json({ error: "user not found" })
         }
 
-        res.status(200).json({userslist:searchedUserData.rows})
+        res.status(200).json({ userslist: searchedUserData.rows })
     } catch (error) {
         console.log(error, 'Error in specific user search');
-        res.status(500).json({error:"Internal server error"})
+        res.status(500).json({ error: "Internal server error" })
     }
 }
