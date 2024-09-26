@@ -95,3 +95,63 @@
     font-size: 18px;
     color: #666;
 }
+/* AdminHome.css */
+
+.block-button,
+.unblock-button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.block-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.block-button:hover {
+    background-color: #c0392b;
+}
+
+.unblock-button {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.unblock-button:hover {
+    background-color: #27ae60;
+}
+
+/* Additional styles */
+.logout-button {
+    background-color: #3498db;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #2980b9;
+}
+
+.search-button {
+    background-color: #f39c12;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.fetch-button:hover,
+.search-button:hover {
+    background-color: #e67e22;
+}

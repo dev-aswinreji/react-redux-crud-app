@@ -70,6 +70,21 @@ export default function AdminHome() {
         }, 1000);
     }
 
+    async function handleUser(email, auth) {
+        console.log(email, 'item is here');
+        if (auth) {
+            const response = await axios.post(`http://localhost:5000/api/admin/block`, {
+                email: email
+            })
+            console.log(response, 'reponse is here');
+        } else if (!auth) {
+            const response = await axios.post(`http://localhost:5000/api/admin/unblock`, {
+                email: email
+            })
+            console.log(response, 'reponse is here');
+        }
+    }
+
     return (
         <div className="admin-home">
             <div className="admin-header">
@@ -80,12 +95,12 @@ export default function AdminHome() {
             <div className="admin-actions">
                 <button onClick={getAllUsersData} className="fetch-button">Get All Users</button>
                 <div className="search-bar">
-                    <input 
-                        type="text" 
-                        name="search" 
-                        value={value} 
-                        onChange={handleSearch} 
-                        placeholder="Search for a user..." 
+                    <input
+                        type="text"
+                        name="search"
+                        value={value}
+                        onChange={handleSearch}
+                        placeholder="Search for a user..."
                     />
                     <button onClick={getSpecificUser} className="search-button">Search</button>
                 </div>
@@ -99,6 +114,7 @@ export default function AdminHome() {
                                 <th>User ID</th>
                                 <th>Name</th>
                                 <th>Email</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -107,9 +123,27 @@ export default function AdminHome() {
                                     <td>{item.userid}</td>
                                     <td>{item.name}</td>
                                     <td>{item.email}</td>
+                                    <td>
+                                        {item.auth ? (
+                                            <button
+                                                onClick={() => handleUser(item.email, item.auth)}
+                                                className="block-button"
+                                            >
+                                                BLOCK
+                                            </button>
+                                        ) : (
+                                            <button
+                                                onClick={() => handleUser(item.email, item.auth)}
+                                                className="unblock-button"
+                                            >
+                                                UNBLOCK
+                                            </button>
+                                        )}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
+
                     </table>
                 ) : (
                     <p className="no-users">No users found.</p>

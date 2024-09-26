@@ -10,6 +10,7 @@ const initialState = {
     },
     message:"",
     userslist:"",
+    userauth:"",
     isLoading: false,
     error: null,
 }
@@ -47,7 +48,11 @@ const adminSlice = createSlice({
         },
         adminLogout:(state,action) => {
             state.token = action.payload
+        },
+        adminUserManage:(state,action) => {
+            state.userauth = action.payload
         }
+
     },
     extraReducers: (builder) => {
         builder.addCase(fetchData.pending, (state) => {
