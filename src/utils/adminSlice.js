@@ -8,6 +8,7 @@ const initialState = {
         name: "",
         email: "",
     },
+    userslist:[],
     isLoading: false,
     error: null,
 }
