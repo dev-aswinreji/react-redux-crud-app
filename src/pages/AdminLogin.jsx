@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { userAuth, userId } from "../utils/userSlice"
 import { toast, ToastContainer } from "react-toastify"
+import { adminAuth, adminId } from "../utils/adminSlice"
 
 export default function AdminLogin() {
     const [email, setEmail] = useState('')
@@ -23,8 +24,8 @@ export default function AdminLogin() {
                 password
             })
             if (result.data.token) {
-                dispatch(userAuth(result.data.token))
-                dispatch(userId(result.data.userid))
+                dispatch(adminAuth(result.data.token))
+                dispatch(adminId(result.data.userid))
                 toast.success('Login Success')
                 setTimeout(() => {
                     navigate("/admin")
