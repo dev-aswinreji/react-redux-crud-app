@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { userAuth, userId } from "../utils/userSlice"
-import { toast, ToastContainer } from "react-toastify"
+import { toast } from "react-toastify"
 
 export default function Login() {
     const [email, setEmail] = useState('')
@@ -16,7 +16,7 @@ export default function Login() {
     }, [])
     async function handleLogin(e) {
         e.preventDefault()
-        const result = await axios.post(`http://localhost:5000/api/users/login`, {
+        const result = await axios.post(`http://localhost:5000/api/admin/login`, {
             email,
             password
         })
@@ -24,10 +24,8 @@ export default function Login() {
         if (result.data.token) {
             dispatch(userAuth(result.data.token))
             dispatch(userId(result.data.userid))
-            toast.success('Login success')
-            setTimeout(()=>{
-            navigate('/')
-            },1000)
+            toast.success('Login Success')
+            navigate("/")
         } else {
             alert('Invalid Credentials')
         }
@@ -51,9 +49,6 @@ export default function Login() {
                 <br />
                 <button>Login </button>
             </form>
-            <p>Don't have account ? <Link to={"/signup"}>Sign Up</Link></p>
-            <ToastContainer/>
              </>
-
     )
 }

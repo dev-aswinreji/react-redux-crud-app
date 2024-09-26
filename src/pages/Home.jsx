@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,8 +18,8 @@ export default function PersonalProfile() {
     const [file, setFile] = useState(null);
 
     useEffect(() => {
-        const storedToken = localStorage.getItem("token");
 
+        const storedToken = localStorage.getItem("token");
         if (!accessToken && storedToken) {
             dispatch(userAuth(storedToken));
         }
@@ -31,7 +31,6 @@ export default function PersonalProfile() {
 
     useEffect(() => {
         if (accessToken) {
-
             axios.get("http://localhost:5000/api/users/home", {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
@@ -44,7 +43,7 @@ export default function PersonalProfile() {
                 console.error('Error fetching user data:', error);
                 navigate("/login");
             });
-            // Persist token in localStorage
+
             localStorage.setItem("token", accessToken);
         }
     }, [accessToken, userid, dispatch, navigate]);
@@ -101,9 +100,12 @@ export default function PersonalProfile() {
     }, [userid]);
 
     const handleSignOut = () => {
-        dispatch(signOut());
+        toast.success("Logout success")
+        setTimeout(()=>{
         localStorage.removeItem("token");
-        navigate("/login");
+        dispatch(signOut());
+        navigate("/login")
+        },1000)
     };
 
     return (
@@ -140,7 +142,7 @@ export default function PersonalProfile() {
                     <button className="btn btn-danger mt-4" onClick={handleSignOut}>Sign Out</button>
                 </div>
             </div>
-            <ToastContainer />
+            <ToastContainer/>
         </div>
     );
 }
