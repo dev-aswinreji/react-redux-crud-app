@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { userAuth, userId } from "../utils/userSlice"
-import { toast } from "react-toastify"
+import { toast, ToastContainer } from "react-toastify"
 
-export default function Login() {
+export default function AdminLogin() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
@@ -16,22 +16,37 @@ export default function Login() {
     }, [])
     async function handleLogin(e) {
         e.preventDefault()
-        const result = await axios.post(`http://localhost:5000/api/admin/login`, {
-            email,
-            password
-        })
-        console.log(result, 'result is shoinw in login page');
-        if (result.data.token) {
-            dispatch(userAuth(result.data.token))
-            dispatch(userId(result.data.userid))
-            toast.success('Login Success')
-            navigate("/")
-        } else {
-            alert('Invalid Credentials')
+        try {
+
+            const result = await axios.post(`http://localhost:5000/api/admin/login`, {
+                email,
+                password
+            })
+            if (result.data.token) {
+                dispatch(userAuth(result.data.token))
+                dispatch(userId(result.data.userid))
+                toast.success('Login Success')
+                setTimeout(() => {
+                    navigate("/admin")
+                }, 1000)
+            }
+
+        } catch (error) {
+            console.log(error, 'Error caught');
+            if (error.response) {
+                if (error.response.status === 401) {
+                    toast.error("Invalid Credentials",{
+                        position:"top-right"
+                    })
+                } else {
+                    toast.error(`Error: ${error.response.data} and ${error.response.status}`)
+                }
+            }
         }
     }
     return (
         <>
+            <h1>Welcome Admin</h1>
             <form onSubmit={handleLogin}>
                 <label htmlFor="email">Email</label>
                 <br />
@@ -49,6 +64,7 @@ export default function Login() {
                 <br />
                 <button>Login </button>
             </form>
-             </>
+            <ToastContainer />
+        </>
     )
 }

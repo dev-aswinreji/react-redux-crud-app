@@ -6,6 +6,8 @@ import Home from './pages/Home'
 import { Provider } from 'react-redux'
 import store from './utils/store'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AdminLogin from './pages/AdminLogin'
+import AdminHome from './pages/AdminHome'
 
 
 function App() {
@@ -16,6 +18,8 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/signup' element={<SignUp />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/admin/login' element={<AdminLogin/>} />
+          <Route path='/admin' element={<AdminHome/>} />
         </Routes>
       </BrowserRouter>
     </Provider>
