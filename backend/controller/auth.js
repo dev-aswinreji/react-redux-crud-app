@@ -49,11 +49,11 @@ export const userSignIn = async (req, res) => {
             return res.status(401).json({ error: "Authentication failed" })
         }
 
-        const token = jwt.sign({ userid: user.rows[0].userid, name: user.rows[0].name }, jwtSecretKey, {
+        const token = jwt.sign({ userid: user.rows[0].userid}, jwtSecretKey, {
             expiresIn: '1hr',
         })
         console.log(token,'token');
-        res.status(200).json({ token ,data:{ id: user.rows[0].userid, name: user.rows[0].name }})
+        res.status(200).json({ token ,userid:user.rows[0].userid })
     } catch (error) {
         console.log(error,'Error In userSignin');
         res.status(500).json({ error: 'Internal Server Error' })

@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { MDBCol, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addImage } from '../utils/userSlice';
-import {toast,ToastContainer} from 'react-toastify';
+import { addImage, signOut, userAuth } from '../utils/userSlice';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import toastr from 'toastr';
-import 'toastr/build/toastr.min.css'; 
-
+import './PersonalProfile.css';
 
 export default function PersonalProfile() {
-    const token = useSelector((store) => store.user.session);
+    const accessToken = useSelector((store) => store.user.token);
     const navigate = useNavigate();
-    const accessToken = token[0];
-    const dispatch = useDispatch()
-    const [profilePic, setProfilePic] = useState(null);
+    const dispatch = useDispatch();
+    const [profilePic, setProfilePic] = useState(localStorage.getItem("profilePic") || null);
     const [file, setFile] = useState(null);
 
+    // Fetch user data on initial load if access token exists
     useEffect(() => {
         if (accessToken) {
             axios.get("http://localhost:5000/api/users/home", {
@@ -26,41 +23,46 @@ export default function PersonalProfile() {
                     "Authorization": `Bearer ${accessToken}`
                 }
             }).then(res => {
-                console.log(res, 'res is here');
+                console.log(res, 'User data fetched');
             }).catch(error => {
                 navigate("/login");
                 console.error('Error fetching user data:', error);
             });
+            // Persist token in localStorage
+            localStorage.setItem("token", accessToken);
         } else {
             navigate("/login");
         }
     }, [accessToken, navigate]);
 
+    // Handle file selection and update profile picture preview
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
+            const imageUrl = URL.createObjectURL(selectedFile);
             setFile(selectedFile);
-            setProfilePic(URL.createObjectURL(selectedFile));
+            setProfilePic(imageUrl);
+            localStorage.setItem("profilePic", imageUrl); // Save the image URL in localStorage
         }
     };
+
+    // Handle image upload to server
     const handleUpload = async () => {
         if (file) {
             try {
-                const response = await axios.post('http://localhost:5000/api/upload', 
-                { fileName: profilePic }, 
-                {
+                const response = await axios.post('http://localhost:5000/api/users/upload', { fileName: profilePic }, {
                     headers: {
                         "Authorization": `Bearer ${accessToken}`,
                         "Content-Type": "application/json"
                     }
                 });
-    
-                dispatch(addImage(profilePic));
-                
-                toast.success("File uploaded successfully!");
+
+                if (response.data.message) {
+                    dispatch(addImage(profilePic));
+                    toast.success("File uploaded successfully!");
+                }
             } catch (error) {
                 console.error('Error uploading file', error);
-                
                 toast.error("Error uploading file");
             }
         } else {
@@ -69,62 +71,66 @@ export default function PersonalProfile() {
             });
         }
     };
-    
+
+    // Load image and token from localStorage on component mount
+    const loadImage = () => {
+        const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+            dispatch(userAuth(storedToken));
+        }
+        const storedImage = localStorage.getItem("profilePic");
+        if (storedImage) {
+            setProfilePic(storedImage);
+        }
+    };
+
+    useEffect(() => {
+        loadImage();
+    }, []);
+
+    // Handle user sign out
+    const handleSignOut = () => {
+        dispatch(signOut());
+        localStorage.removeItem("token"); // Remove token from localStorage
+        localStorage.removeItem("profilePic"); // Optional: Remove profilePic if needed
+        navigate("/login");
+    };
+
     return (
-        <section className="vh-100" style={{ backgroundColor: '#f4f5f7' }}>
-            <MDBContainer className="py-5 h-100">
-                <MDBRow className="justify-content-center align-items-center h-100">
-                    <MDBCol lg="6" className="mb-4 mb-lg-0">
-                        <MDBCard className="mb-3" style={{ borderRadius: '.5rem' }}>
-                            <MDBRow className="g-0">
-                                <MDBCol md="4" className="gradient-custom text-center text-black"
-                                    style={{ borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem' }}>
+        <div className="profile-container vh-100">
+            <div className="profile-card">
+                <div className="left-panel">
+                    <div className="profile-pic-wrapper">
+                        <img
+                            src={profilePic || "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"}
+                            alt="Profile Pic"
+                            className="profile-pic"
+                        />
+                    </div>
+                    <div className="upload-section">
+                        <input type="file" accept="image/*" onChange={handleFileChange} className="form-control" />
+                        <button onClick={handleUpload} className="btn btn-primary mt-3">Upload</button>
+                    </div>
+                </div>
+                <div className="right-panel">
+                    <h3 className="profile-name">John Doe</h3>
+                    <p className="profile-title">Software Developer</p>
+                    <div className="info-section">
+                        <h6>Email</h6>
+                        <p className="text-muted">john.doe@example.com</p>
 
-                                    {/* Show preview if profilePic exists, otherwise fallback */}
-                                    <MDBCardImage
-                                        src={profilePic || "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"}
-                                        alt="Profile Pic"
-                                        className="my-5"
-                                        style={{ width: '80px' }}
-                                        fluid
-                                    />
-
-                                    <input type="file" accept="image/*" onChange={handleFileChange} />
-                                    <button onClick={handleUpload}>Upload</button>
-
-                                    <MDBTypography tag="h5">Marie Horwitz</MDBTypography>
-                                    <MDBCardText>Web Designer</MDBCardText>
-                                    <MDBIcon far icon="edit mb-5" />
-                                </MDBCol>
-                                <MDBCol md="8">
-                                    <MDBCardBody className="p-4">
-                                        <MDBTypography tag="h6">Information</MDBTypography>
-                                        <hr className="mt-0 mb-4" />
-                                        <MDBRow className="pt-1">
-                                            <MDBCol size="6" className="mb-3">
-                                                <MDBTypography tag="h6">Email</MDBTypography>
-                                                <MDBCardText className="text-muted">info@example.com</MDBCardText>
-                                            </MDBCol>
-                                            <MDBCol size="6" className="mb-3">
-                                                <MDBTypography tag="h6">Phone</MDBTypography>
-                                                <MDBCardText className="text-muted">123 456 789</MDBCardText>
-                                            </MDBCol>
-                                        </MDBRow>
-
-                                        <div className="d-flex justify-content-start">
-                                            <a href="#!"><MDBIcon fab icon="facebook me-3" size="lg" /></a>
-                                            <a href="#!"><MDBIcon fab icon="twitter me-3" size="lg" /></a>
-                                            <a href="#!"><MDBIcon fab icon="instagram me-3" size="lg" /></a>
-                                        </div>
-                                    </MDBCardBody>
-                                </MDBCol>
-                            </MDBRow>
-                        </MDBCard>
-                    </MDBCol>
-                </MDBRow>
-            </MDBContainer>
-            <ToastContainer/>
-        </section>
-
+                        <h6>Phone</h6>
+                        <p className="text-muted">123 456 789</p>
+                    </div>
+                    <div className="social-links">
+                        <a href="#!" className="social-icon"><i className="fab fa-facebook-f"></i></a>
+                        <a href="#!" className="social-icon"><i className="fab fa-twitter"></i></a>
+                        <a href="#!" className="social-icon"><i className="fab fa-instagram"></i></a>
+                    </div>
+                    <button className="btn btn-danger mt-4" onClick={handleSignOut}>Sign Out</button>
+                </div>
+            </div>
+            <ToastContainer />
+        </div>
     );
 }

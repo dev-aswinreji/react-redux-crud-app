@@ -9,7 +9,7 @@ export default function SignUp() {
     const navigate = useNavigate()
     async function handleSignUp(e) {
         e.preventDefault()
-        const result = await axios.post('http://localhost:5000/api/users/create', {
+        const result = await axios.post('http://localhost:5000/api/users/', {
             name,
             email,
             password

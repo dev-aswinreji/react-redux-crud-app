@@ -12,7 +12,7 @@ route.post('/users/login',userSignIn)
 
 route.get('/users/home',verifyToken,userHome)
 
-route.post('/users/upload',verifyToken,imageUpload)
+route.post('/users/upload',imageUpload)
 
 export default route
 

@@ -2,7 +2,7 @@ import axios from "axios"
 import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
-import { userAuth } from "../utils/userSlice"
+import { userAuth, userId } from "../utils/userSlice"
 
 export default function Login() {
     const [email, setEmail] = useState('')
@@ -22,6 +22,7 @@ export default function Login() {
         console.log(result, 'result is shoinw in login page');
         if (result.data.token) {
             dispatch(userAuth(result.data.token))
+            dispatch(userId(result.data.userid))
             alert('Login Success')
             navigate("/")
         } else {

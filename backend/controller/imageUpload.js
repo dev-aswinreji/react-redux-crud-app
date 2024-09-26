@@ -6,10 +6,10 @@ export const imageUpload = async (req, res) => {
         console.log(req.body, 'file is here');
         const { fileName } = req.body
         const userid = req.user?.userid
-        const userData = await pool.query(`SELECT email from users 
-        WHERE userid='${userid}'
-        `)
-        console.log(userData.rows[0]?.email, 'userData is here');
+        // const userData = await pool.query(`SELECT email from users 
+        // WHERE userid='${userid}'
+        // `)
+        // console.log(userData.rows[0]?.email, 'userData is here');
         const output = await pool.query(`UPDATE users SET imageurl=$1 WHERE userid=$2`,
             [fileName, userid]
         )
