@@ -17,7 +17,7 @@ export const usersList = async (req, res) => {
         SELECT * FROM users WHERE isadmin = false;
         `)
 
-        res.status(200).json({ usersList: usersList.rows })
+        res.status(200).json({ userslist: usersList.rows })
 
     } catch (error) {
 

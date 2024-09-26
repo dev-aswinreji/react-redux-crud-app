@@ -8,7 +8,7 @@ const initialState = {
         name: "",
         email: "",
     },
-    userslist:[],
+    userslist:"",
     isLoading: false,
     error: null,
 }
@@ -42,6 +42,9 @@ const adminSlice = createSlice({
         },
         adminData: (state, action) => {
             state.adminData = action.payload
+        },
+        adminUsersList:(state,action) => {
+            state.userslist= action.payload
         }
     },
     extraReducers: (builder) => {
@@ -60,5 +63,5 @@ const adminSlice = createSlice({
 
 })
 
-export const { adminAuth, adminId, adminData } = adminSlice.actions
+export const { adminAuth, adminId, adminData, adminUsersList } = adminSlice.actions
 export default adminSlice.reducer
