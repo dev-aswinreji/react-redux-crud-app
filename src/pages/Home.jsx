@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addImage, signOut, userAuth } from '../utils/userSlice';
+import { addImage, signOut, userAuth, userData, userId } from '../utils/userSlice';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -10,43 +10,55 @@ import './PersonalProfile.css';
 
 export default function PersonalProfile() {
     const accessToken = useSelector((store) => store.user.token);
+    const userid = useSelector((store) => store.user.userid);
+    const { name, email } = useSelector((store) => store.user.userDatas);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [profilePic, setProfilePic] = useState(localStorage.getItem("profilePic") || null);
+    const [profilePic, setProfilePic] = useState(localStorage.getItem(userid) || null);
     const [file, setFile] = useState(null);
 
-    // Fetch user data on initial load if access token exists
+    useEffect(() => {
+        const storedToken = localStorage.getItem("token");
+
+        if (!accessToken && storedToken) {
+            dispatch(userAuth(storedToken));
+        }
+
+        if (!accessToken && !storedToken) {
+            navigate("/login");
+        }
+    }, [accessToken, dispatch, navigate]);
+
     useEffect(() => {
         if (accessToken) {
+
             axios.get("http://localhost:5000/api/users/home", {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
             }).then(res => {
-                console.log(res, 'User data fetched');
+                const { userid, name, email } = res.data.userData;
+                dispatch(userId(userid));
+                dispatch(userData({ name, email }));
             }).catch(error => {
-                navigate("/login");
                 console.error('Error fetching user data:', error);
+                navigate("/login");
             });
             // Persist token in localStorage
             localStorage.setItem("token", accessToken);
-        } else {
-            navigate("/login");
         }
-    }, [accessToken, navigate]);
+    }, [accessToken, userid, dispatch, navigate]);
 
-    // Handle file selection and update profile picture preview
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
             const imageUrl = URL.createObjectURL(selectedFile);
             setFile(selectedFile);
             setProfilePic(imageUrl);
-            localStorage.setItem("profilePic", imageUrl); // Save the image URL in localStorage
+            localStorage.setItem(userid, imageUrl);
         }
     };
 
-    // Handle image upload to server
     const handleUpload = async () => {
         if (file) {
             try {
@@ -72,13 +84,13 @@ export default function PersonalProfile() {
         }
     };
 
-    // Load image and token from localStorage on component mount
     const loadImage = () => {
         const storedToken = localStorage.getItem("token");
         if (storedToken) {
             dispatch(userAuth(storedToken));
         }
-        const storedImage = localStorage.getItem("profilePic");
+
+        const storedImage = localStorage.getItem(userid);
         if (storedImage) {
             setProfilePic(storedImage);
         }
@@ -86,13 +98,11 @@ export default function PersonalProfile() {
 
     useEffect(() => {
         loadImage();
-    }, []);
+    }, [userid]);
 
-    // Handle user sign out
     const handleSignOut = () => {
         dispatch(signOut());
-        localStorage.removeItem("token"); // Remove token from localStorage
-        localStorage.removeItem("profilePic"); // Optional: Remove profilePic if needed
+        localStorage.removeItem("token");
         navigate("/login");
     };
 
@@ -113,11 +123,11 @@ export default function PersonalProfile() {
                     </div>
                 </div>
                 <div className="right-panel">
-                    <h3 className="profile-name">John Doe</h3>
+                    <h3 className="profile-name">{name || "User Name"}</h3>
                     <p className="profile-title">Software Developer</p>
                     <div className="info-section">
                         <h6>Email</h6>
-                        <p className="text-muted">john.doe@example.com</p>
+                        <p className="text-muted">{email || "user@example.com"}</p>
 
                         <h6>Phone</h6>
                         <p className="text-muted">123 456 789</p>

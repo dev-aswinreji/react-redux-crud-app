@@ -62,7 +62,10 @@ export const userSignIn = async (req, res) => {
 
 export const userHome = async (req, res) => {
 
-    const { userid, name } = req.user
-
-    res.status(200).json({ message: "Protected route accessed", user: {userid,name}})
+    const { userid } = req.user
+    const userData = await pool.query(`
+        SELECT userid,name,email from users WHERE userid='${userid}';
+        `)
+    res.status(200).json({ message: "Protected route accessed", userData: userData.rows[0]})
 }
+

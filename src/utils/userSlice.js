@@ -6,7 +6,11 @@ const userSlice = createSlice({
         isAuth: "false",
         userid: "",
         imageUrl: "",
-        token: ""
+        token: "",
+        userDatas:{
+            name:"",
+            email:"",
+        },
     },
     reducers: {
         userAuth: (state, action) => {
@@ -14,6 +18,9 @@ const userSlice = createSlice({
         },
         userId: (state, action) => {
             state.userid = action.payload
+        },
+        userData:(state,action) => {
+            state.userDatas = action.payload
         },
         signOut: (state, action) => {
             state.token = action.payload
@@ -28,6 +35,6 @@ const userSlice = createSlice({
     }
 })
 
-export const { userAuth, userId, signOut, addImage, removeImage } = userSlice.actions
+export const { userAuth, userId,userData, signOut, addImage, removeImage } = userSlice.actions
 
 export default userSlice.reducer
