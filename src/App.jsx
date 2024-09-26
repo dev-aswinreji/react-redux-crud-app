@@ -9,16 +9,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function App() {
-    return (
-      <Provider store={store}>
+  return (
+    <Provider store={store}>
       <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Home/>} />
-        <Route path='/signup' element={<SignUp/>} />
-        <Route path='/login' element={<Login/>} />
-      </Routes>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/signup' element={<SignUp />} />
+          <Route path='/login' element={<Login />} />
+        </Routes>
       </BrowserRouter>
-      </Provider>
+    </Provider>
   )
 }
 
