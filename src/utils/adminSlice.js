@@ -2,12 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-    id: "",
+    adminid: "",
     token: "",
     adminData: {
         name: "",
         email: "",
     },
+    message:"",
     userslist:"",
     isLoading: false,
     error: null,
@@ -15,8 +16,6 @@ const initialState = {
 export const fetchData = createAsyncThunk(
     'admin/fetchData',
     async ({ accessToken, endpoint, method, data = null }) => {
-        console.log(accessToken, 'token is here');
-        console.log(endpoint, accessToken, 'is it working');
         const res = await axios({
             method: method,
             url: `http://localhost:5000/api/admin${endpoint}`,
@@ -38,13 +37,16 @@ const adminSlice = createSlice({
             state.token = action.payload
         },
         adminId: (state, action) => {
-            state.id = action.payload
+            state.adminid = action.payload
         },
         adminData: (state, action) => {
             state.adminData = action.payload
         },
         adminUsersList:(state,action) => {
             state.userslist= action.payload
+        },
+        adminLogout:(state,action) => {
+            state.token = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -53,7 +55,8 @@ const adminSlice = createSlice({
         })
         builder.addCase(fetchData.fulfilled, (state, action) => {
             state.isLoading = false
-            state.token = action.payload
+            console.log(action.payload,'payload is showing ========>>>');
+            state.message = action.payload
         })
         builder.addCase(fetchData.rejected, (state, action) => {
             state.isLoading = false
@@ -63,5 +66,5 @@ const adminSlice = createSlice({
 
 })
 
-export const { adminAuth, adminId, adminData, adminUsersList } = adminSlice.actions
+export const { adminAuth, adminId, adminData, adminUsersList, adminLogout } = adminSlice.actions
 export default adminSlice.reducer

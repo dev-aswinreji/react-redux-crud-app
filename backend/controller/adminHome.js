@@ -80,7 +80,7 @@ export const unblock = async (req, res) => {
 export const specificUserSearch = async (req, res) => {
     try {
         const { search } = req.body
-
+        console.log(search,'data is recienving');
         const searchedUserData = await pool.query(`
             SELECT * FROM users 
             WHERE email iLIKE '${search}%';
@@ -90,7 +90,7 @@ export const specificUserSearch = async (req, res) => {
             return res.status(404).json({error:"user not found"})
         }
 
-        res.status(200).json({userData:searchedUserData.rows})
+        res.status(200).json({userslist:searchedUserData.rows})
     } catch (error) {
         console.log(error, 'Error in specific user search');
         res.status(500).json({error:"Internal server error"})

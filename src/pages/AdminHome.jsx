@@ -1,34 +1,106 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { adminUsersList, fetchData } from "../utils/adminSlice"
+import { adminAuth, adminLogout, adminUsersList, fetchData } from "../utils/adminSlice"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
 import "./AdminHome.css";
+import { toast, ToastContainer } from "react-toastify"
 
 export default function AdminHome() {
     const accessToken = useSelector((store) => store.admin.token)
     const usersList = useSelector((store) => store.admin.userslist)
-
+    const adminid = useSelector((store)=>store.admin.adminid)
+    const [value, setValue] = useState("")
     const navigate = useNavigate()
-    console.log(accessToken, 'accessToken is here');
     const dispatch = useDispatch()
+
+    console.log(accessToken, 'accessToken is here');
+
+    useEffect(() => {
+
+        const storedToken = localStorage.getItem("tokenAdmin");
+        if (!accessToken && storedToken) {
+            dispatch(adminAuth(storedToken));
+        }
+
+        if (!accessToken && !storedToken) {
+            navigate("/admin/login");
+        }
+
+    }, [accessToken, dispatch, navigate]);
+
     useEffect(() => {
         if (accessToken) {
             dispatch(fetchData({ accessToken, endpoint: '/home', method: 'GET' }))
         }
+        localStorage.setItem("tokenAdmin",accessToken)
     }, [accessToken, dispatch])
 
     async function getAllUsersData() {
-        const response = await axios.get(`http://localhost:5000/api/admin/userslist`)
-        const { userslist } = response.data
-        console.log(userslist);
-        dispatch(adminUsersList(userslist))
+        try {
+
+            const response = await axios.get(`http://localhost:5000/api/admin/userslist`)
+            const { userslist } = response.data
+            console.log(userslist);
+            dispatch(adminUsersList(userslist))
+
+        } catch (error) {
+            console.log(error, "Error in getAll UsersData func");
+            toast.error("Error occured in admin Home")
+        }
     }
 
+    async function getSpecificUser() {
+        try {
+
+            const response = await axios.post(`http://localhost:5000/api/admin/search`, {
+                search: value
+            })
+            console.log(response, 'response is showing');
+            const { userslist } = response.data
+            dispatch(adminUsersList(userslist))
+
+        } catch (error) {
+            console.log(error, "Error in getSpecificUser");
+            if (error.response) {
+                if (error.response.status === 404) {
+                    toast.error("No user found", {
+                        position: "top-right"
+                    })
+                } else {
+                    toast.error(`Error: ${error.response.data} and ${error.response.status}`)
+                }
+            }
+        }
+    }
+    function handleSearch(e) {
+        e.preventDefault()
+        setValue(e.target.value)
+    }
+    function reload(){
+        const storedToken = localStorage.getItem("tokenAdmin")
+        dispatch(adminAuth(storedToken))
+    }
+    useEffect(()=>{
+        reload()
+    },[adminid])
+    function handleLogout() {
+        toast.success("logout success")
+        setTimeout(() => {
+            dispatch(adminLogout(null))
+            navigate("/admin/login")
+        }, 1000)
+    }
     return (
         <div className="admin-home">
             <h1>Welcome to Admin Panel</h1>
             <button onClick={getAllUsersData} className="fetch-button">Get User Data</button>
+            <button onClick={handleLogout} style={{ textAlign: "end" }}>Logout</button>
+            <br />
+
+            <input type="text" name="search" id="" value={value} onChange={handleSearch} />
+            <button onClick={getSpecificUser}>Search</button>
+
             {usersList && usersList.length > 0 ? (
                 <table className="user-table">
                     <thead>
@@ -51,6 +123,7 @@ export default function AdminHome() {
             ) : (
                 <p>No users found.</p>
             )}
+            <ToastContainer />
         </div>
     );
 }

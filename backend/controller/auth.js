@@ -36,36 +36,44 @@ export const userSignUp = async (req, res) => {
 export const userSignIn = async (req, res) => {
     try {
         const { email, password } = req.body
-        console.log(password,'pass');
+        console.log(password, 'pass');
         const jwtSecretKey = process.env.JWT_SECRET_KEY
 
         const user = await pool.query(`
             SELECT userid,name,password from users WHERE email='${email}';
             `)
-        console.log(user,'user is here');
+        console.log(user, 'user is here');
         const hashPassword = await bcrypt.compare(password, user.rows[0]?.password)
-        console.log(hashPassword,'hashedPass');
+        console.log(hashPassword, 'hashedPass');
         if (!hashPassword) {
             return res.status(401).json({ error: "Authentication failed" })
         }
 
-        const token = jwt.sign({ userid: user.rows[0].userid}, jwtSecretKey, {
+        const token = jwt.sign({ id: user.rows[0].userid }, jwtSecretKey, {
             expiresIn: '1hr',
         })
-        console.log(token,'token');
-        res.status(200).json({ token ,id:user.rows[0].userid })
+        console.log(token, 'token');
+        res.status(200).json({ token, id: user.rows[0].userid })
     } catch (error) {
-        console.log(error,'Error In userSignin');
+        console.log(error, 'Error In userSignin');
         res.status(500).json({ error: 'Internal Server Error' })
     }
 }
 
 export const userHome = async (req, res) => {
-
-    const { userid } = req.user
-    const userData = await pool.query(`
-        SELECT userid,name,email from users WHERE userid='${userid}';
+    try {
+        console.log("inside home");
+        console.log(req.user,'req.user is here');
+        const { id } = req.user
+        console.log(id,'id is here');
+        const userData = await pool.query(`
+        SELECT userid,name,email from users WHERE userid='${id}';
         `)
-    res.status(200).json({ message: "Protected route accessed", userData: userData.rows[0]})
+        res.status(200).json({ message: "Protected route accessed", userData: userData.rows[0] })
+
+    } catch (error) {
+        console.log(error, 'Error in userHome');
+        res.status(500).json({error:"internal server error"})
+    }
 }
 

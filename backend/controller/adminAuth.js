@@ -20,8 +20,8 @@ export const adminLogin = async (req, res) => {
         console.log(hashPassword,'password is showing');
         const isAdmin = adminData.rows[0]?.isadmin
         if (hashPassword && isAdmin) {
-            const token = jwt.sign({ adminEmail: adminData.rows[0]?.email }, process.env.JWT_SECRET_KEY, { expiresIn: '1hr' })
-            return res.status(200).json({ token: token,id:adminData.rows[0]?.userid, message: "admin login success" })
+            const token = jwt.sign({ id: adminData.rows[0]?.userid}, process.env.JWT_SECRET_KEY, { expiresIn: '1hr' })
+            return res.status(200).json({ token: token,id:adminData.rows[0]?.userid})
         }
         console.log("above last line of code in try");
         res.status(401).json({ error: "invalid entry" })
