@@ -42,6 +42,9 @@ export const userSignIn = async (req, res) => {
         const user = await pool.query(`
             SELECT userid,name,password,auth from users WHERE email='${email}';
             `)
+        if (!user.rows[0].auth) {
+            return res.status(401).json({ error: "Authentication failed" })
+        }
         console.log(user, 'user is here');
         const hashPassword = await bcrypt.compare(password, user.rows[0]?.password)
         console.log(hashPassword, 'hashedPass');
@@ -63,9 +66,9 @@ export const userSignIn = async (req, res) => {
 export const userHome = async (req, res) => {
     try {
         console.log("inside home");
-        console.log(req.user,'req.user is here');
+        console.log(req.user, 'req.user is here');
         const { id } = req.user
-        console.log(id,'id is here');
+        console.log(id, 'id is here');
         const userData = await pool.query(`
         SELECT userid,name,email from users WHERE userid='${id}';
         `)
@@ -73,7 +76,7 @@ export const userHome = async (req, res) => {
 
     } catch (error) {
         console.log(error, 'Error in userHome');
-        res.status(500).json({error:"internal server error"})
+        res.status(500).json({ error: "internal server error" })
     }
 }
 
