@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { toast, ToastContainer } from "react-toastify"
+import { toast } from "react-toastify"
 
 export default function SignUp() {
     const [name, setName] = useState('')
@@ -22,7 +22,7 @@ export default function SignUp() {
                 toast.success('Signup Success')
                 setTimeout(() => {
                     navigate("/login")
-                },1000)
+                }, 1000)
             } else {
                 alert('Some error occured', result.error)
             }

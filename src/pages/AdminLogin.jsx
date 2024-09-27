@@ -1,9 +1,8 @@
 import axios from "axios"
 import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
-import { Link, useNavigate } from "react-router-dom"
-import { userAuth, userId } from "../utils/userSlice"
-import { toast, ToastContainer } from "react-toastify"
+import { useNavigate } from "react-router-dom"
+import { toast } from "react-toastify"
 import { adminAuth, adminId } from "../utils/adminSlice"
 
 export default function AdminLogin() {
@@ -36,8 +35,8 @@ export default function AdminLogin() {
             console.log(error, 'Error caught');
             if (error.response) {
                 if (error.response.status === 401) {
-                    toast.error("Invalid Credentials",{
-                        position:"top-right"
+                    toast.error("Invalid Credentials", {
+                        position: "top-right"
                     })
                 } else {
                     toast.error(`Error: ${error.response.data} and ${error.response.status}`)

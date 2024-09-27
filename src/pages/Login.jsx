@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { userAuth, userId } from "../utils/userSlice"
-import { toast, ToastContainer } from "react-toastify"
+import { toast } from "react-toastify"
 
 export default function Login() {
     const [email, setEmail] = useState('')

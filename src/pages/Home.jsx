@@ -1,12 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addImage, signOut, userAuth, userData, userId } from '../utils/userSlice';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
-import './PersonalProfile.css';
+import './Home.css';
 
 export default function PersonalProfile() {
     const accessToken = useSelector((store) => store.user.token);
