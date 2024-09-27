@@ -43,7 +43,7 @@ export default function AdminHome() {
         }
     }
 
-    async function getSpecificUser() {
+    async function getSpecificUser(value) {
         try {
             const response = await axios.post(`http://localhost:5000/api/admin/search`, { search: value });
             const { userslist } = response.data;
@@ -58,7 +58,9 @@ export default function AdminHome() {
     }
 
     function handleSearch(e) {
-        setValue(e.target.value);
+        setValue(e.target.value || "");
+        console.log(e.target.value);
+        getSpecificUser(e.target.value)
     }
 
     function handleLogout() {
@@ -70,20 +72,36 @@ export default function AdminHome() {
         }, 1000);
     }
 
-    async function handleUser(email, auth) {
+    async function handleUser(email, currentAuth) {
         console.log(email, 'item is here');
-        if (auth) {
-            const response = await axios.post(`http://localhost:5000/api/admin/block`, {
-                email: email
-            })
-            console.log(response, 'reponse is here');
-        } else if (!auth) {
-            const response = await axios.post(`http://localhost:5000/api/admin/unblock`, {
-                email: email
-            })
-            console.log(response, 'reponse is here');
+        console.log(currentAuth, 'auth is here');
+        const updatedUsersList = usersList.map(user =>
+            user.email === email ? { ...user, auth: !currentAuth } : user
+        )
+        dispatch(adminUsersList(updatedUsersList))
+        try {
+
+            if (currentAuth) {
+                const response = await axios.post(`http://localhost:5000/api/admin/block`, {
+                    email
+                })
+                console.log(response, 'reponse is here');
+                toast.success("User blocked successfully")
+            } else {
+                const response = await axios.post(`http://localhost:5000/api/admin/unblock`, {
+                    email
+                })
+                console.log(response, 'reponse is here');
+                toast.success("User unblocked successfully")
+            }
+        } catch (error) {
+            console.log(error, "Error caught in handleUser");
         }
     }
+
+    useEffect(() => {
+        getAllUsersData()
+    }, [])
 
     return (
         <div className="admin-home">
@@ -93,13 +111,15 @@ export default function AdminHome() {
             </div>
 
             <div className="admin-actions">
-                <button onClick={getAllUsersData} className="fetch-button">Get All Users</button>
+                {/* <button
+                    onClick={getAllUsersData}
+                    clssName="fetch-button">Get All Users</button> */}
                 <div className="search-bar">
                     <input
                         type="text"
                         name="search"
-                        value={value}
-                        onChange={handleSearch}
+                        // value={value}
+                        onKeyUp={handleSearch}
                         placeholder="Search for a user..."
                     />
                     <button onClick={getSpecificUser} className="search-button">Search</button>

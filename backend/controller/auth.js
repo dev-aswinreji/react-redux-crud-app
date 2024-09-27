@@ -40,7 +40,7 @@ export const userSignIn = async (req, res) => {
         const jwtSecretKey = process.env.JWT_SECRET_KEY
 
         const user = await pool.query(`
-            SELECT userid,name,password from users WHERE email='${email}';
+            SELECT userid,name,password,auth from users WHERE email='${email}';
             `)
         console.log(user, 'user is here');
         const hashPassword = await bcrypt.compare(password, user.rows[0]?.password)
