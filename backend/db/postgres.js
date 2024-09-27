@@ -18,7 +18,8 @@ const createTable = async () => {
             email VARCHAR(50) UNIQUE NOT NULL,
             password VARCHAR(100) NOT NULL,
             imageurl VARCHAR(120) ,
-            auth BOOLEAN
+            auth BOOLEAN true,
+            isadmin BOOLEAN false
         );`)
 
     } catch (err) {
