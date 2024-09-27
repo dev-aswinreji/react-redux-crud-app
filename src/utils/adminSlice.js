@@ -60,7 +60,6 @@ const adminSlice = createSlice({
         })
         builder.addCase(fetchData.fulfilled, (state, action) => {
             state.isLoading = false
-            console.log(action.payload,'payload is showing ========>>>');
             state.message = action.payload.message
             const {userid,name,email} = action.payload.adminData
             state.adminData = {name,email}

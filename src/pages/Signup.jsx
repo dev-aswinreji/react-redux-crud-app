@@ -1,5 +1,6 @@
 import axios from "axios"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
@@ -8,6 +9,12 @@ export default function SignUp() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
+    useEffect(()=>{
+        const storedToken = localStorage.getItem("token")
+        if(storedToken){
+            navigate("/")
+        }
+    },[])
     async function handleSignUp(e) {
         e.preventDefault()
         try {

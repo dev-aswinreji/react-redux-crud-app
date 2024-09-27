@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useEffect, useRef, useState } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 import { userAuth, userId } from "../utils/userSlice"
 import { toast } from "react-toastify"
@@ -11,7 +11,12 @@ export default function Login() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const inputRef = useRef(null)
+
     useEffect(() => {
+        const storedToken = localStorage.getItem("token")
+        if(storedToken){
+            navigate("/")
+        }
         inputRef.current.focus()
     }, [])
     async function handleLogin(e) {
