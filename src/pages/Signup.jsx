@@ -33,7 +33,7 @@ export default function SignUp() {
                 if (error.response.status === 409) {
                     toast.error("Email already exist")
                 } else if (error.response.status === 400) {
-                    toast.error("All fields are mandatory")
+                    toast.warn("All fields are mandatory")
                 }
             }
         }

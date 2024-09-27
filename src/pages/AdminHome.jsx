@@ -35,9 +35,16 @@ export default function AdminHome() {
 
     async function getAllUsersData() {
         try {
-            const response = await axios.get(`http://localhost:5000/api/admin/userslist`);
-            const { userslist } = response.data;
-            dispatch(adminUsersList(userslist));
+            if (accessToken) {
+                const response = await axios.get(`http://localhost:5000/api/admin/userslist`, {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    }
+                });
+                console.log(response, 'response is showing');
+                const { userslist } = response.data;
+                dispatch(adminUsersList(userslist));
+            }
         } catch (error) {
             toast.error("Error occurred in fetching user data");
         }
@@ -45,9 +52,18 @@ export default function AdminHome() {
 
     async function getSpecificUser(value) {
         try {
-            const response = await axios.post(`http://localhost:5000/api/admin/search`, { search: value });
-            const { userslist } = response.data;
-            dispatch(adminUsersList(userslist));
+            if (accessToken) {
+                console.log(accessToken, 'Is there accesstoken here');
+                const response = await axios.post(`http://localhost:5000/api/admin/search`, { search: value }, {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    }
+                });
+                const { userslist } = response.data;
+                dispatch(adminUsersList(userslist));
+            } else {
+                navigate("/admin/login")
+            }
         } catch (error) {
             if (error.response?.status === 404) {
                 toast.error("No user found");
@@ -81,16 +97,25 @@ export default function AdminHome() {
         dispatch(adminUsersList(updatedUsersList))
         try {
 
-            if (currentAuth) {
+            if (currentAuth && accessToken) {
                 const response = await axios.post(`http://localhost:5000/api/admin/block`, {
                     email
+                }, {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    }
                 })
                 console.log(response, 'reponse is here');
                 toast.success("User blocked successfully")
-            } else {
+            } else if (!currentAuth && accessToken) {
                 const response = await axios.post(`http://localhost:5000/api/admin/unblock`, {
                     email
-                })
+                }, {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    }
+                }
+                )
                 console.log(response, 'reponse is here');
                 toast.success("User unblocked successfully")
             }
@@ -101,7 +126,7 @@ export default function AdminHome() {
 
     useEffect(() => {
         getAllUsersData()
-    }, [])
+    }, [accessToken])
 
     return (
         <div className="admin-home">

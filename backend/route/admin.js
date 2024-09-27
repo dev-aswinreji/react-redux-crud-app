@@ -8,9 +8,9 @@ const adminRoute = express.Router()
 
 adminRoute.post('/login',adminLogin)
 adminRoute.get('/home',verifyToken,adminHome)
-adminRoute.get('/userslist',usersList)
-adminRoute.post('/block',block)
-adminRoute.post('/unblock',unblock)
-adminRoute.post('/search',specificUserSearch)
+adminRoute.get('/userslist',verifyToken,usersList)
+adminRoute.post('/block',verifyToken,block)
+adminRoute.post('/unblock',verifyToken,unblock)
+adminRoute.post('/search',verifyToken,specificUserSearch)
 
 export default adminRoute

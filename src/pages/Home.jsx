@@ -58,7 +58,7 @@ export default function PersonalProfile() {
     };
 
     const handleUpload = async () => {
-        if (file) {
+        if (file && accessToken) {
             try {
                 const response = await axios.post('http://localhost:5000/api/users/upload', { fileName: profilePic }, {
                     headers: {
@@ -77,7 +77,7 @@ export default function PersonalProfile() {
             }
         } else {
             toast.warn("Please select a file to upload", {
-                position: toast.POSITION.TOP_RIGHT
+                position:"top-right" 
             });
         }
     };

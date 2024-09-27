@@ -17,27 +17,31 @@ export default function Login() {
     async function handleLogin(e) {
         e.preventDefault()
         try {
-            
-        const result = await axios.post(`http://localhost:5000/api/users/login`, {
-            email,
-            password
-        })
-        console.log(result, 'result is shoinw in login page');
-        if (result.data.token) {
-            dispatch(userAuth(result.data.token))
-            dispatch(userId(result.data.userid))
-            toast.success('Login success')
-            setTimeout(()=>{
-            navigate('/')
-            },1000)
-        }
-        
+
+            const result = await axios.post(`http://localhost:5000/api/users/login`, {
+                email,
+                password
+            })
+            console.log(result, 'result is shoinw in login page');
+            if (result.data.token) {
+                dispatch(userAuth(result.data.token))
+                dispatch(userId(result.data.userid))
+                toast.success('Login success')
+                setTimeout(() => {
+                    navigate('/')
+                }, 1000)
+            }
+
         } catch (error) {
-            console.log(error,'Error in handleLogin Func');
-            if(error.response){
-                if(error.response.status === 401){
+            console.log(error, 'Error in handleLogin Func');
+            if (error.response) {
+                if (error.response.status === 400) {
+                    toast.warn("All fields are mandatory")
+                } else if (error.response.status === 404) {
+                    toast.error("Invalid credentials")
+                } else if (error.response.status === 401) {
                     toast.error("Authorization denied")
-                }else {
+                } else {
                     toast.error(error.response || error.response.status)
                 }
             }
@@ -63,7 +67,7 @@ export default function Login() {
                 <button>Login </button>
             </form>
             <p>Don't have account ? <Link to={"/signup"}>Sign Up</Link></p>
-             </>
+        </>
 
     )
 }

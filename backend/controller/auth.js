@@ -39,12 +39,19 @@ export const userSignUp = async (req, res) => {
 export const userSignIn = async (req, res) => {
     try {
         const { email, password } = req.body
+                    
+        if (!email || !password) {
+            return res.status(400).json({ result: "provided information is not correct" })
+        }
         console.log(password, 'pass');
         const jwtSecretKey = process.env.JWT_SECRET_KEY
 
         const user = await pool.query(`
             SELECT userid,name,password,auth from users WHERE email='${email}';
             `)
+        if(!user.rows[0]){
+            return res.status(404).json({error:"Invalid credentials"})
+        }
         if (!user.rows[0].auth) {
             return res.status(401).json({ error: "Authentication failed" })
         }
