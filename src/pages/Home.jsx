@@ -68,6 +68,7 @@ export default function PersonalProfile() {
                 });
 
                 if (response.data.message) {
+                    setFile("")
                     dispatch(addImage(profilePic));
                     toast.success("File uploaded successfully!");
                 }
@@ -77,7 +78,7 @@ export default function PersonalProfile() {
             }
         } else {
             toast.warn("Please select a file to upload", {
-                position:"top-right" 
+                position: "top-right"
             });
         }
     };
@@ -100,11 +101,11 @@ export default function PersonalProfile() {
 
     const handleSignOut = () => {
         toast.success("Logout success")
-        setTimeout(()=>{
-        localStorage.removeItem("token");
-        dispatch(signOut());
-        navigate("/login")
-        },1000)
+        setTimeout(() => {
+            localStorage.removeItem("token");
+            dispatch(signOut());
+            navigate("/login")
+        }, 1000)
     };
 
     return (
