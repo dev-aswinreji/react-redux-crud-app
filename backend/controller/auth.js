@@ -6,6 +6,11 @@ export const userSignUp = async (req, res) => {
     try {
 
         const { name, email, password } = req.body
+
+        if (!name || !email || !password) {
+            return res.status(400).json({ result: "provided information is not correct" })
+        }
+
         const isExist = await pool.query(`
         SELECT email from users WHERE email='${email}'
         `);
@@ -14,14 +19,12 @@ export const userSignUp = async (req, res) => {
             return res.status(409).json({ result: "Email already exist" })
         }
 
-        if (!name || !email || !password) {
-            return res.status(400).json({ result: "provided information is not correct" })
-        }
+
 
         const hashPassword = await bcrypt.hash(password, 10)
         await pool.query(
-            'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
-            [name, email, hashPassword]
+            'INSERT INTO users (name, email, password,auth,isadmin) VALUES ($1, $2, $3, $4, $5)',
+            [name, email, hashPassword,true,false]
         );
 
         res.status(201).json({ message: "account created successfully" })

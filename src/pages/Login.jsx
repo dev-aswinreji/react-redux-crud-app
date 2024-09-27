@@ -16,6 +16,8 @@ export default function Login() {
     }, [])
     async function handleLogin(e) {
         e.preventDefault()
+        try {
+            
         const result = await axios.post(`http://localhost:5000/api/users/login`, {
             email,
             password
@@ -28,8 +30,17 @@ export default function Login() {
             setTimeout(()=>{
             navigate('/')
             },1000)
-        } else {
-            alert('Invalid Credentials')
+        }
+        
+        } catch (error) {
+            console.log(error,'Error in handleLogin Func');
+            if(error.response){
+                if(error.response.status === 401){
+                    toast.error("Authorization denied")
+                }else {
+                    toast.error(error.response || error.response.status)
+                }
+            }
         }
     }
     return (
