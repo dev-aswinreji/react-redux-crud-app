@@ -64,7 +64,6 @@ export default function SignUp() {
             <p className="p-3">Already have account?
                 <Link to={"/login"} >Login</Link>
             </p>
-            <ToastContainer />
         </>
     )
 }

@@ -63,7 +63,6 @@ export default function Login() {
                 <button>Login </button>
             </form>
             <p>Don't have account ? <Link to={"/signup"}>Sign Up</Link></p>
-            <ToastContainer/>
              </>
 
     )

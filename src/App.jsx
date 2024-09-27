@@ -8,20 +8,23 @@ import store from './utils/store'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AdminLogin from './pages/AdminLogin'
 import AdminHome from './pages/AdminHome'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 
 function App() {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/signup' element={<SignUp />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/admin/login' element={<AdminLogin/>} />
-          <Route path='/admin' element={<AdminHome/>} />
-        </Routes>
-      </BrowserRouter>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/signup' element={<SignUp />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/admin/login' element={<AdminLogin />} />
+            <Route path='/admin' element={<AdminHome />} />
+          </Routes>
+        </BrowserRouter>
+      <ToastContainer/>
     </Provider>
   )
 }

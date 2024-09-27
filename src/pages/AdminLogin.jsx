@@ -65,7 +65,6 @@ export default function AdminLogin() {
                 <br />
                 <button>Login </button>
             </form>
-            <ToastContainer />
         </>
     )
 }

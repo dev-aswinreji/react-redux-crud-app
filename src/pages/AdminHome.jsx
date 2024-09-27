@@ -118,8 +118,8 @@ export default function AdminHome() {
                     <input
                         type="text"
                         name="search"
-                        // value={value}
-                        onKeyUp={handleSearch}
+                        value={value}
+                        onInput={handleSearch}
                         placeholder="Search for a user..."
                     />
                     <button onClick={getSpecificUser} className="search-button">Search</button>
@@ -170,7 +170,6 @@ export default function AdminHome() {
                 )}
             </div>
 
-            <ToastContainer />
         </div>
     );
 }

@@ -142,7 +142,6 @@ export default function PersonalProfile() {
                     <button className="btn btn-danger mt-4" onClick={handleSignOut}>Sign Out</button>
                 </div>
             </div>
-            <ToastContainer/>
         </div>
     );
 }
