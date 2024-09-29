@@ -68,8 +68,8 @@ export default function PersonalProfile() {
                 });
 
                 if (response.data.message) {
-                    setFile("")
                     dispatch(addImage(profilePic));
+                    setFile("")
                     toast.success("File uploaded successfully!");
                 }
             } catch (error) {

@@ -41,7 +41,6 @@ export default function AdminHome() {
                         "Authorization": `Bearer ${accessToken}`
                     }
                 });
-                console.log(response, 'response is showing');
                 const { userslist } = response.data;
                 dispatch(adminUsersList(userslist));
             }
@@ -53,7 +52,6 @@ export default function AdminHome() {
     async function getSpecificUser(value) {
         try {
             if (accessToken) {
-                console.log(accessToken, 'Is there accesstoken here');
                 const response = await axios.post(`http://localhost:5000/api/admin/search`, { search: value }, {
                     headers: {
                         "Authorization": `Bearer ${accessToken}`
@@ -75,7 +73,6 @@ export default function AdminHome() {
 
     function handleSearch(e) {
         setValue(e.target.value || "");
-        console.log(e.target.value);
         getSpecificUser(e.target.value)
     }
 
@@ -89,8 +86,6 @@ export default function AdminHome() {
     }
 
     async function handleUser(email, currentAuth) {
-        console.log(email, 'item is here');
-        console.log(currentAuth, 'auth is here');
         const updatedUsersList = usersList.map(user =>
             user.email === email ? { ...user, auth: !currentAuth } : user
         )
@@ -105,7 +100,6 @@ export default function AdminHome() {
                         "Authorization": `Bearer ${accessToken}`
                     }
                 })
-                console.log(response, 'reponse is here');
                 toast.success("User blocked successfully")
             } else if (!currentAuth && accessToken) {
                 const response = await axios.post(`http://localhost:5000/api/admin/unblock`, {
@@ -116,7 +110,6 @@ export default function AdminHome() {
                     }
                 }
                 )
-                console.log(response, 'reponse is here');
                 toast.success("User unblocked successfully")
             }
         } catch (error) {
@@ -136,9 +129,6 @@ export default function AdminHome() {
             </div>
 
             <div className="admin-actions">
-                {/* <button
-                    onClick={getAllUsersData}
-                    clssName="fetch-button">Get All Users</button> */}
                 <div className="search-bar">
                     <input
                         type="text"
@@ -147,7 +137,7 @@ export default function AdminHome() {
                         onInput={handleSearch}
                         placeholder="Search for a user..."
                     />
-                    <button onClick={getSpecificUser} className="search-button">Search</button>
+                    {/* <button onClick={getSpecificUser} className="search-button">Search</button> */}
                 </div>
             </div>
 
