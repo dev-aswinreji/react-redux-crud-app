@@ -55,7 +55,6 @@ export const userSignIn = async (req, res) => {
         if (!user.rows[0].auth) {
             return res.status(401).json({ error: "Authentication failed" })
         }
-        console.log(user, 'user is here');
         const hashPassword = await bcrypt.compare(password, user.rows[0]?.password)
         console.log(hashPassword, 'hashedPass');
         if (!hashPassword) {
@@ -65,7 +64,6 @@ export const userSignIn = async (req, res) => {
         const token = jwt.sign({ id: user.rows[0].userid }, jwtSecretKey, {
             expiresIn: '1hr',
         })
-        console.log(token, 'token');
         res.status(200).json({ token, id: user.rows[0].userid })
     } catch (error) {
         console.log(error, 'Error In userSignin');
@@ -75,10 +73,7 @@ export const userSignIn = async (req, res) => {
 
 export const userHome = async (req, res) => {
     try {
-        console.log("inside home");
-        console.log(req.user, 'req.user is here');
         const { id } = req.user
-        console.log(id, 'id is here');
         const userData = await pool.query(`
         SELECT userid,name,email from users WHERE userid='${id}';
         `)
