@@ -4,10 +4,8 @@ export function verifyToken(req, res, next) {
 
     try {
         const tokenHeader = process.env.TOKEN_HEADER_KEY
-        console.log(tokenHeader,'Token header');
         const jwtSecretKey = process.env.JWT_SECRET_KEY
         const authHeader = req.header(tokenHeader)
-        console.log(authHeader,'What is this'); 
         if(!authHeader){
             return res.status(401).json({error:"Invalid authentication"})
         }
